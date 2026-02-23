@@ -7,19 +7,29 @@ exports.getDashbordSummary = async (req, res, next) => {
         const totalProject = await ProjectModel.countDocuments({
             createdBy: userId
         })
-        const totalTask = await TaskModel.countDocuments();
+
+        const projects = await ProjectModel.find({ createdBy: userId }).select('_id');
+        const projectIds = projects.map(p => p._id);
+
+        const totalTask = await TaskModel.countDocuments({
+            projectId: { $in: projectIds }
+        });
+
         const completedTask = await TaskModel.countDocuments(
             {
+                createdBy: userId,
                 status: 'Completed'
             }
         );
         const pendingTask = await TaskModel.countDocuments(
             {
+                createdBy: userId,
                 status: 'Pending',
             }
         );
         const inProgressTask = await TaskModel.countDocuments(
             {
+                createdBy: userId,
                 status: 'In Progress'
             }
         );

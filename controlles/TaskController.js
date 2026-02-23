@@ -5,7 +5,7 @@ exports.createTask = async (req, res, next) => {
         const { title, description, status, priority, dueDate, projectId, assignedTo } = req.body;
 
         const task = await TaskModel.create({
-            title, description, status, priority, dueDate, projectId, assignedTo
+            title, description, status, priority, dueDate, projectId, assignedTo, createdBy: req.user.id
         })
 
         res.status(201).json({
